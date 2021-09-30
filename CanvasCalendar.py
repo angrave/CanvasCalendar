@@ -143,7 +143,7 @@ def wrap_description(d):
     if d.startswith('http'):
         
         # Dont use quote() etc; we need to preserve ":" in the "http:"
-        d = d.replace('"','%33')
+        d = d.replace('"','%22')
         result = f"""<p><a class="inline_disabled" href="{d}" target="_blank" rel="noopener">Open in new window</a></p>""" 
     return result
 
