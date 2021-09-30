@@ -2,7 +2,9 @@ import os
 import sys
 import re
 from datetime import datetime
-assert sys.version_info.major >= 3
+
+# f-strings require python 3.6+
+assert sys.version_info >= (3,6)
 
 try:
     import requests
