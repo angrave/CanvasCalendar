@@ -78,7 +78,6 @@ def create_event(session,course_id,event):
     raise Exception('Could not create event')
 
 def get_all_events(session,course_id):
-    # Print all events (only used for debugging). Does not support pagination
     url1 = f"{ getCanvasBaseUrl() }/api/v1/calendar_events/"
     data1 = {
         'context_codes[]': f"course_{course_id}",
