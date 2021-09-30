@@ -2,7 +2,11 @@ import os
 import sys
 import re
 from datetime import datetime
-import requests
+try:
+    import requests
+except Exception:
+    print('Please install the requests library e.g. \npip install requests')
+    sys.exit(1)
 
 # This python3 script requires the requests library, which can be installed with 
 # pip3 install requests
