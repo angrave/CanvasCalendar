@@ -5,7 +5,7 @@ from datetime import datetime
 try:
     import requests
 except Exception:
-    print('Please install the requests library e.g. \npip install requests')
+    print('Please install the requests library e.g. Using pip or pip3, \npip install requests')
     sys.exit(1)
 
 # This python3 script requires the requests library, which can be installed with 
