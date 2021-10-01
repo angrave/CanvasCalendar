@@ -10,7 +10,10 @@
 import os
 import sys
 import re
-from datetime import datetime
+import datetime
+
+from dateutil import tz
+from dateutil.parser import parse, parserinfo
 
 # f-strings require python 3.6+
 assert sys.version_info >= (3, 6)
@@ -64,10 +67,11 @@ Without a listing file script will list all events in the given course and exit
 With a listing file the script will create new events. Events previously created in the course by this script will be first be deleted. An example event list file is below-
 
 # Blank lines and lines starting with a hash character are ignored
-# Dates must be in  ISO 8601 format, "%Y-%m-%dT%H:%M:%SZ"
+# Dates should be in ISO 8601 format, "%Y-%m-%dT%H:%M:%SZ"
+# Central standard time (CST) timezone is supported - see examples below
 # start-time end-time title description (each field separated by a tab character)
 
-2021-09-20T11:00:00Z	2021-09-20T12:00:00Z	MP2-HelloWorld30	<p>ABC</p>
+2021-09-20T11:00:00CST	2021-09-20T12:00:00CST	MP2-HelloWorld30	<p>ABC</p>
 2021-09-23T11:00:00Z	2021-09-23T12:00:00Z	MP3-HelloWorld30	https://www.illinois.edu
 
 """  # Please add your name to the above if you've improved this code.
@@ -166,15 +170,18 @@ def delete_my_old_events(session, course_id):
     print()
 
 
-def date_format_check(name, index, value):
-    try:  # ISO 8601 format
-        datetime.strptime(value, "%Y-%m-%dT%H:%M:%SZ")
-        return value
+def parse_date_format(name, index, value):
+    ISO8601 = "%Y-%m-%dT%H:%M:%SZ"
+    tzinfos = {x: tz.tzutc() for x in parserinfo().UTCZONE}
+    tzinfos['CST'] = tz.gettz("America/Chicago")
+    
+    try:
+        d = parse(value,tzinfos=tzinfos)
+        d= d.astimezone(tz.tzutc())
+        
+        return d.strftime(ISO8601)
     except ValueError:
-        pass
-    print(
-        f"{name} at line {index+1}: {value} expected date/time format like 2021-09-20T11:00:00Z"
-    )
+        print( f"{name} at line {index+1}: {value} expected date/time ISO8601 format like 2021-09-20T06:00:00Z or similar e.g. 2021-09-20T11:00:00 CT" )
     raise Exception(f"Invalidate date at line {index+1}")
 
 
@@ -201,9 +208,10 @@ def read_event_file(filename):
 
             description = wrap_description(raw_description)
 
-            date_format_check("start_at", index, start_at)  # e.g. 2021-09-20T11:00:00Z
-            date_format_check("end_at", index, end_at)
-
+            start_at = parse_date_format("start_at", index, start_at)  # e.g. 2021-09-20T11:00:00Z
+            end_at = parse_date_format("end_at", index, end_at)
+            print(f"end_at = {end_at}")
+            
             new_events.append(
                 {
                     "start_at": start_at,
