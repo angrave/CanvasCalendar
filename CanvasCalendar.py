@@ -1,3 +1,10 @@
+#!/usr/bin/env python3
+
+# Copyright 2021 Board of Trustees, University of Illinois
+# Permission to use, copy, modify, and/or distribute this software for any purpose with or without fee is hereby granted, provided that the above copyright notice and this permission notice appear in all copies.
+
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
 import os
 import sys
 import re
@@ -12,13 +19,13 @@ except Exception:
     print('Please install the requests library e.g. Using pip or pip3, \npip install requests')
     sys.exit(1)
 
-# This python3 script requires the requests library, which can be installed with 
+# This python3 script requires the requests library, which can usually be installed with 
 # pip3 install requests
 
 # Canvas documentation-
 # https://canvas.instructure.com/doc/api/calendar_events.html
 # https://canvas.instructure.com/doc/api/file.pagination.html
-# Note 'They will be absolute urls that include all parameters necessary to retrieve the desired current, next, previous, first, or last page' is false
+# Note the phrase, 'They will be absolute urls that include all parameters necessary to retrieve the desired current, next, previous, first, or last page'... is false
 
 # Python request library documentation
 # https://docs.python-requests.org/en/latest/
@@ -41,6 +48,12 @@ Original version by L Angrave 2021.
 Thanks to David Dalpiaz, the SIIP team and Illinois for testing and contributions.
 
 Usage: python3 SCRIPTNAME <courseid> [listingfile]
+
+Courseid is a small integer.
+
+The script experts CANVAS_ACCESS_TOKEN environment variable to be set.
+To create your Canvas Access Token, login to https://canvas.illinois.edu/
+Left hand bar select Account then Settings. Scroll down to Approved Integrations and click New Access Token
 
 Without a listing file script will list all events in the given course and exit
 
