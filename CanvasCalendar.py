@@ -11,6 +11,7 @@ import os
 import sys
 import re
 import datetime
+from datetime import timezone, timedelta
 
 from dateutil import tz
 from dateutil.parser import parse, parserinfo
@@ -68,11 +69,15 @@ With a listing file the script will create new events. Events previously created
 
 # Blank lines and lines starting with a hash character are ignored
 # Dates should be in ISO 8601 format, "%Y-%m-%dT%H:%M:%SZ"
-# Central standard time (CST) timezone is supported - see examples below
+# A small set of timezone are supported-
+# "Z" ( Zulu/GMT ) "CST" (-6) "CDT" (-5) 
+# and "CT" (-5 or -6 depending on date)
+
 # start-time end-time title description (each field separated by a tab character)
 
-2021-09-20T11:00:00CST	2021-09-20T12:00:00CST	MP2-HelloWorld30	<p>ABC</p>
-2021-09-23T11:00:00Z	2021-09-23T12:00:00Z	MP3-HelloWorld30	https://www.illinois.edu
+2021-09-20T11:00:00CT	2021-09-20T12:00:00CT	MP2-Hello	<p>ABC</p>
+2021-09-23T11:00:00CDT	2021-09-23T12:00:00CDT	MP3-World	https://www.illinois.edu
+2021-09-25T11:00:00CST	2021-09-23T12:00:00CST	MP4-ABCDE   https://www.cs.illinois.edu
 
 """  # Please add your name to the above if you've improved this code.
     print(about.replace("SCRIPTNAME", sys.argv[0]))
@@ -173,15 +178,22 @@ def delete_my_old_events(session, course_id):
 def parse_date_format(name, index, value):
     ISO8601 = "%Y-%m-%dT%H:%M:%SZ"
     tzinfos = {x: tz.tzutc() for x in parserinfo().UTCZONE}
-    tzinfos['CST'] = tz.gettz("America/Chicago")
-    
+
+    tzinfos["CST"] = timezone(timedelta(hours=-6))  # Central Standard Time definition
+    tzinfos["CDT"] = timezone(timedelta(hours=-5))  # Central Daylight Time definition
+    tzinfos["CT"] = tz.gettz("America/Chicago")
+
     try:
-        d = parse(value,tzinfos=tzinfos)
-        d= d.astimezone(tz.tzutc())
-        
+        d = parse(value, tzinfos=tzinfos)
+        if d.tzinfo is None:
+            raise ValueError("No Timezone")
+        d = d.astimezone(tz.tzutc())
+
         return d.strftime(ISO8601)
     except ValueError:
-        print( f"{name} at line {index+1}: {value} expected date/time ISO8601 format like 2021-09-20T06:00:00Z or similar e.g. 2021-09-20T11:00:00 CT" )
+        print(
+            f"{name} at line {index+1}: {value} expected date/time ISO8601 format like 2021-09-20T06:00:00Z or similar e.g. 2021-09-20T11:00:00 CT"
+        )
     raise Exception(f"Invalidate date at line {index+1}")
 
 
@@ -208,10 +220,12 @@ def read_event_file(filename):
 
             description = wrap_description(raw_description)
 
-            start_at = parse_date_format("start_at", index, start_at)  # e.g. 2021-09-20T11:00:00Z
+            start_at = parse_date_format(
+                "start_at", index, start_at
+            )  # e.g. 2021-09-20T11:00:00Z
             end_at = parse_date_format("end_at", index, end_at)
-            print(f"end_at = {end_at}")
-            
+            # print(f"end_at = {end_at}")
+
             new_events.append(
                 {
                     "start_at": start_at,
