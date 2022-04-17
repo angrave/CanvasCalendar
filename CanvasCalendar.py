@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# Copyright 2021 Board of Trustees, University of Illinois
+# Copyright 2021-2022 Board of Trustees, University of Illinois
 # Permission to use, copy, modify, and/or distribute this software for any purpose with or without fee is hereby granted, provided that the above copyright notice and this permission notice appear in all copies.
 
 # THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
@@ -51,7 +51,7 @@ Permission to use, copy, modify, and/or distribute this software for any purpose
 THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 Acknowledgements:
-Supported by a U ofI Grainger College of Engineering SIIP Grant 2021
+Supported by a University of Illinois Grainger College of Engineering SIIP Grant 2021
 Original version by L Angrave 2021.
 Thanks to David Dalpiaz, the SIIP team and Illinois for testing and contributions.
 
@@ -77,7 +77,7 @@ With a listing file the script will create new events. Events previously created
 
 2021-09-20T11:00:00CT	2021-09-20T12:00:00CT	MP2-Hello	<p>ABC</p>
 2021-09-23T11:00:00CDT	2021-09-23T12:00:00CDT	MP3-World	https://www.illinois.edu
-2021-09-25T11:00:00CST	2021-09-23T12:00:00CST	MP4-ABCDE   https://www.cs.illinois.edu
+2021-09-25T11:00:00CST	2021-09-23T12:00:00CST	MP4-ABCDE	https://www.cs.illinois.edu
 
 """  # Please add your name to the above if you've improved this code.
     print(about.replace("SCRIPTNAME", sys.argv[0]))
@@ -140,6 +140,8 @@ def get_all_events(session, course_id):
                 break
             else:
                 url1 = r.links["next"]["url"]
+    if page_count == max_page_count:
+        print(f"Reached page limit on event results. Found {len(all_events)} in {page_count} pages.")
 
     return all_events
 
@@ -262,12 +264,12 @@ def main():
         instructions = """\     
 CANVAS_ACCESS_TOKEN environment variable was not set.
 
-To create your Canvas Access Token, login to https://canvas.illinois.edu/
-Left hand bar select Account then Settings. Scroll down to Approved Integrations and click New Access Token
+To create your Canvas Access Token, login to your Canvas website e.g. https://canvas.illinois.edu/
+Use the left area and select Account then Settings. Scroll down to Approved Integrations and click New Access Token
 
-In .bashrc or somewhere e.g.create a file token.sh (then do "source token.sh" to set the environment variable)
+Linux Tip: Create a file canvastoken.sh,
 export CANVAS_ACCESS_TOKEN='<Your token>'
-If storing in a sheel script use "source yourscript.sh" to set the environment variable
+Then use "source canvastoken.sh" to set the environment variable in your shell environment
 """
         print(instructions)
 
