@@ -63,9 +63,9 @@ The script experts CANVAS_ACCESS_TOKEN environment variable to be set.
 To create your Canvas Access Token, login to https://canvas.illinois.edu/
 Left hand bar select Account then Settings. Scroll down to Approved Integrations and click New Access Token
 
-Without a listing file script will list all events in the given course and exit
+Without a listing file this script will list all events in the given course and exit. No changes are made.
 
-With a listing file the script will create new events. Events previously created in the course by this script will be first be deleted. An example event list file is below-
+With a listing file this script will create new events. Events previously created in the course by this script will be first be deleted. An example event list file is below-
 
 # Blank lines and lines starting with a hash character are ignored
 # Dates should be in ISO 8601 format, "%Y-%m-%dT%H:%M:%SZ"
@@ -79,6 +79,7 @@ With a listing file the script will create new events. Events previously created
 2021-09-23T11:00:00CDT	2021-09-23T12:00:00CDT	MP3-World	https://www.illinois.edu
 2021-09-25T11:00:00CST	2021-09-23T12:00:00CST	MP4-ABCDE	https://www.cs.illinois.edu
 
+An empty listing file will cause previously created events by this script to be deleted.
 """  # Please add your name to the above if you've improved this code.
     print(about.replace("SCRIPTNAME", sys.argv[0]))
 
